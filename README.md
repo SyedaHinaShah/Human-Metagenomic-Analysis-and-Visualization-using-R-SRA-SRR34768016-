@@ -1,5 +1,6 @@
 # Human-Metagenomic-Analysis-and-Visualization-using-R-SRA-SRR34768016-
 Complete human metagenomic analysis of SRR34768016 using Linux and R. Includes QC, genome mapping, functional profiling, and visualization (barplots, heatmaps, circular genome plots). Transforms raw reads into meaningful biological insights for microbiome research and functional annotation.
+
 ### loaded Library
 library(dplyr)
 library(ggplot2)
@@ -8,7 +9,7 @@ library(tidyverse)
 # Load the Prokka annotation table
 prokka_data <- read_tsv("sample1.tsv")
 
-# Summarize counts of each gene function (product)
+# Summarise counts of each gene function 
 gene_counts <- prokka_data %>%
   count(product, sort = TRUE)
 
@@ -57,8 +58,7 @@ write_csv(feature_counts, "feature_type_counts.csv")
 
 cat("\nSummary tables saved as 'gene_function_counts.csv' and 'feature_type_counts.csv'\n")
 
-##
-# For org.Hs.eg.db (human annotation package)
+### For org.Hs.eg.db (human annotation package)
 if (!requireNamespace("BiocManager", quietly = TRUE))
   install.packages("BiocManager")
 
@@ -71,7 +71,7 @@ install.packages("pheatmap")
 library(tidyverse)
 library(pheatmap)
 library(clusterProfiler)
-library(org.Hs.eg.db)  # change or remove based on your organism
+library(org.Hs.eg.db)  
 
 # Set working directory
 setwd("~/human meta")
@@ -120,16 +120,6 @@ pheatmap(heatmap_data,
 write_csv(known_genes, "known_genes_for_pathway_analysis.csv")
 cat("Exported known genes for pathway analysis.\n")
 
-####----------
-library(ggplot2)
-
-ggplot(prokka_data, aes(x = length_bp)) +
-  geom_histogram(binwidth = 50, fill = "purple", color = "black") +
-  labs(title = "Distribution of Gene Lengths",
-       x = "Gene Length (bp)",
-       y = "Count") +
-  theme_minimal()
-##
 if("ftype" %in% colnames(prokka_data)) {
   feature_counts <- prokka_data %>% count(ftype, sort = TRUE)
   ggplot(feature_counts, aes(x = reorder(ftype, n), y = n)) +
@@ -142,10 +132,8 @@ if("ftype" %in% colnames(prokka_data)) {
 } else {
   message("No 'ftype' column found.")
 }
-##
 
-###
-library(Biostrings)
+### library(Biostrings)
 
 # Calculate GC content
 gc_content <- letterFrequency(contigs, letters = c("G", "C"), as.prob = TRUE)
@@ -168,8 +156,7 @@ ggplot(df, aes(x = length, y = gc)) +
        x = "Contig Length (log scale)",
        y = "GC Content (%)") +
   theme_minimal()
-###
-library(dplyr)
+### library(dplyr)
 
 # Assuming prokka_data is loaded with a column ftype representing feature types
 feature_counts <- prokka_data %>%
@@ -181,7 +168,7 @@ ggplot(feature_counts, aes(x = "", y = n, fill = ftype)) +
   labs(title = "Feature Type Composition") +
   theme_void() +
   theme(legend.title = element_blank())
-###
+### 
 top_genes <- prokka_data %>%
   filter(!grepl("hypothetical", product, ignore.case = TRUE)) %>%
   count(product, sort = TRUE) %>%
@@ -230,7 +217,7 @@ install.packages("d3r")
 library(d3r)
 library(sunburstR)
 
-# Example hierarchical data (replace with your real functional categories)
+# hierarchical data (replace with your real functional categories)
 df <- data.frame(
   path = c("Metabolism|Carbohydrate metabolism|Glycolysis",
            "Metabolism|Amino acid metabolism|Glutamate",
@@ -256,6 +243,8 @@ plot_ly(
   colorscale = "Viridis"
 ) %>%
   layout(title = "Interactive Heatmap")
+
+  
 <img width="426" height="349" alt="tRNA" src="https://github.com/user-attachments/assets/ccd75776-a196-4c04-9de6-f86d4d6e6081" />
 <img width="426" height="349" alt="Taxonomic by samples" src="https://github.com/user-attachments/assets/a96370db-47fc-4840-a963-7a2c7d9c24c1" />
 <img width="424" height="347" alt="gene sample" src="https://github.com/user-attachments/assets/4ee75b1f-2a75-40f4-abfa-2344c660b55e" />

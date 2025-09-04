@@ -1,12 +1,9 @@
 # Human-Metagenomic-Analysis-and-Visualization-using-R-SRA-SRR34768016-
 Complete human metagenomic analysis of SRR34768016 using Linux and R. Includes QC, genome mapping, functional profiling, and visualization (barplots, heatmaps, circular genome plots). Transforms raw reads into meaningful biological insights for microbiome research and functional annotation.
-#loaded Library
+### loaded Library
 library(dplyr)
 library(ggplot2)
 library(tidyverse)
-
-# Set your working directory where sample1.tsv is located
-setwd("~/human meta")
 
 # Load the Prokka annotation table
 prokka_data <- read_tsv("sample1.tsv")
@@ -101,24 +98,6 @@ if ("COG" %in% colnames(prokka_data)) {
 } else {
   cat("No COG column found; skipping COG enrichment.\n")
 }
-
-# 3) Prepare for enrichment analysis (example with GO terms, adjust for your data)
-
-# If you have gene IDs and GO annotations, you can do enrichment with clusterProfiler
-# Here we fake a gene list for demo - replace this with real gene IDs and categories
-
-# Example: Convert gene products to Entrez IDs (if possible)
-# entrez_ids <- mapIds(org.Hs.eg.db, keys=known_genes$product, column="ENTREZID", keytype="SYMBOL", multiVals="first")
-# entrez_ids <- na.omit(entrez_ids)
-
-# Run GO enrichment - example for Biological Process
-# ego <- enrichGO(gene = entrez_ids,
-#                 OrgDb = org.Hs.eg.db,
-#                 ont = "BP",
-#                 pAdjustMethod = "BH",
-#                 pvalueCutoff = 0.05,
-#                 readable = TRUE)
-# print(head(ego))
 
 # 4) Visualization: Heatmap of top gene functions
 
@@ -215,8 +194,7 @@ ggplot(top_genes, aes(x = reorder(product, n), y = n)) +
        x = "Gene Product",
        y = "Count") +
   theme_minimal()
-##
-# Example dummy matrix (replace with real presence/absence data)
+## Heatmap
 presence_matrix <- matrix(sample(0:1, 100, replace = TRUE), nrow = 10)
 rownames(presence_matrix) <- paste0("Gene", 1:10)
 colnames(presence_matrix) <- paste0("Contig", 1:10)
@@ -226,15 +204,15 @@ pheatmap::pheatmap(presence_matrix, cluster_rows = TRUE, cluster_cols = TRUE,
 ####
 library(igraph)
 
-# Build a simple gene co-occurrence network example
-# (You'd create an adjacency matrix from your real data)
+# Build a simple gene co-occurrence network 
+
 adj <- matrix(sample(0:1, 100, replace = TRUE, prob = c(0.8, 0.2)), nrow=10)
 diag(adj) <- 0
 g <- graph.adjacency(adj, mode = "undirected")
 
 plot(g, vertex.label = paste("Gene", 1:10), main = "Gene Co-occurrence Network")
 ###
-# Example data frame
+# data frame
 taxa <- data.frame(
   Sample = rep(c("Sample1", "Sample2"), each = 4),
   Taxon = rep(c("Firmicutes", "Proteobacteria", "Bacteroidetes", "Actinobacteria"), 2),
